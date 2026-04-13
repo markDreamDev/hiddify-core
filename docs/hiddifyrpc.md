@@ -947,6 +947,7 @@ HiddifyOptions defines the configuration options for the Hiddify application.
 | inbound_options | [InboundOptions](#hiddifyoptions-InboundOptions) |  | Inbound connection options. |
 | url_test_options | [URLTestOptions](#hiddifyoptions-URLTestOptions) |  | URL test configuration options. |
 | route_options | [RouteOptions](#hiddifyoptions-RouteOptions) |  | Routing-related options. |
+| reverse_region_routing | [bool](#bool) |  | If true, invert region-based routing: matched traffic → proxy, default → direct. |
 
 
 
