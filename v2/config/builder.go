@@ -875,6 +875,14 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 		})
 	}
 	if hopt.Region != "other" {
+		matchedOutbound := OutboundDirectTag
+		matchedDNSServer := DNSMultiDirectTag
+		matchedDNSStrategy := hopt.DirectDnsDomainStrategy
+		if hopt.ReverseRegionRouting {
+			matchedOutbound = OutboundMainDetour
+			matchedDNSServer = DNSRemoteTag
+			matchedDNSStrategy = hopt.RemoteDnsDomainStrategy
+		}
 		dnsRules = append(dnsRules, option.DefaultDNSRule{
 			RawDefaultDNSRule: option.RawDefaultDNSRule{
 				DomainSuffix: []string{"." + hopt.Region},
@@ -882,8 +890,8 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 			DNSRuleAction: option.DNSRuleAction{
 				Action: C.RuleActionTypeRoute,
 				RouteOptions: option.DNSRouteActionOptions{
-					Server:         DNSMultiDirectTag,
-					Strategy:       hopt.DirectDnsDomainStrategy,
+					Server:         matchedDNSServer,
+					Strategy:       matchedDNSStrategy,
 					RewriteTTL:     &DEFAULT_DNS_TTL,
 					BypassIfFailed: false,
 				},
@@ -898,7 +906,7 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 				RuleAction: option.RuleAction{
 					Action: C.RuleActionTypeRoute,
 					RouteOptions: option.RouteActionOptions{
-						Outbound: OutboundDirectTag,
+						Outbound: matchedOutbound,
 					},
 				},
 			},
@@ -914,8 +922,8 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 			DNSRuleAction: option.DNSRuleAction{
 				Action: C.RuleActionTypeRoute,
 				RouteOptions: option.DNSRouteActionOptions{
-					Server:         DNSMultiDirectTag,
-					Strategy:       hopt.DirectDnsDomainStrategy,
+					Server:         matchedDNSServer,
+					Strategy:       matchedDNSStrategy,
 					RewriteTTL:     &DEFAULT_DNS_TTL,
 					BypassIfFailed: false,
 				},
@@ -955,7 +963,7 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 				RuleAction: option.RuleAction{
 					Action: C.RuleActionTypeRoute,
 					RouteOptions: option.RouteActionOptions{
-						Outbound: OutboundDirectTag,
+						Outbound: matchedOutbound,
 					},
 				},
 			},
@@ -978,8 +986,13 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 		})
 	}
 	options.Route = &option.RouteOptions{
-		Rules:               routeRules,
-		Final:               OutboundMainDetour,
+		Rules: routeRules,
+		Final: func() string {
+			if hopt.Region != "other" && hopt.ReverseRegionRouting {
+				return OutboundDirectTag
+			}
+			return OutboundMainDetour
+		}(),
 		AutoDetectInterface: (!C.IsAndroid && !C.IsIos) && (hopt.EnableTun || hopt.EnableTunService),
 		DefaultDomainResolver: &option.DomainResolveOptions{
 			Server:   DNSMultiDirectTag,
