@@ -1040,13 +1040,22 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 
 	}
 
+	catchAllDnsServer := DNSMultiRemoteTag
+	catchAllDnsStrategy := hopt.RemoteDnsDomainStrategy
+	if hopt.ReverseRegionRouting && hopt.Region != "other" {
+		// Preempts Route/DNS.Final. In reverse mode everything not matched by the
+		// earlier geo/cn rules must resolve via the direct path, otherwise abroad
+		// users can't reach e.g. www.google.com (DNS goes through the CN node).
+		catchAllDnsServer = DNSMultiDirectTag
+		catchAllDnsStrategy = hopt.DirectDnsDomainStrategy
+	}
 	dnsRules = append(dnsRules, option.DefaultDNSRule{
 		RawDefaultDNSRule: option.RawDefaultDNSRule{},
 		DNSRuleAction: option.DNSRuleAction{
 			Action: C.RuleActionTypeRoute,
 			RouteOptions: option.DNSRouteActionOptions{
-				Server:         DNSMultiRemoteTag,
-				Strategy:       hopt.RemoteDnsDomainStrategy,
+				Server:         catchAllDnsServer,
+				Strategy:       catchAllDnsStrategy,
 				RewriteTTL:     &DEFAULT_DNS_TTL,
 				BypassIfFailed: false,
 			},
