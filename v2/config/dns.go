@@ -96,13 +96,20 @@ func setDns(options *option.Options, opt *HiddifyOptions, staticIps *map[string]
 	// 	return err
 	// }
 
+	dnsFinal := DNSMultiRemoteTag
+	if opt.ReverseRegionRouting && opt.Region != "other" {
+		// Mirror the Route.Final flip in builder.go: without this, unmatched
+		// domains resolve via the proxy (CN node) and DNS for Google etc. gets
+		// blocked by GFW even though the TCP route is direct.
+		dnsFinal = DNSMultiDirectTag
+	}
 	dnsOptions := option.DNSOptions{
 		RawDNSOptions: option.RawDNSOptions{
 			DNSClientOptions: option.DNSClientOptions{
 				IndependentCache: opt.IndependentDNSCache && !C.IsIos,
 				DisableExpire:    true,
 			},
-			Final: DNSMultiRemoteTag,
+			Final: dnsFinal,
 
 			Servers: []option.DNSServerOptions{
 				*static_dns,
