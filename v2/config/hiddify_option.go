@@ -18,7 +18,7 @@ type HiddifyOptions struct {
 	ClashApiPort            uint16 `json:"clash-api-port,omitempty"`
 	ClashApiSecret          string `json:"web-secret,omitempty"`
 	Region                  string `json:"region,omitempty"`
-	ReverseRegionRouting    bool   `json:"reverse-region-routing,omitempty"`
+	RoutingMode             string `json:"routing-mode,omitempty"`
 	BlockAds                bool   `json:"block-ads,omitempty" overridable:"true"`
 	UseXrayCoreWhenPossible bool   `json:"use-xray-core-when-possible,omitempty" overridable:"true"`
 	BalancerStrategy        string `json:"balancer-strategy,omitempty" overridable:"true"`
@@ -144,7 +144,7 @@ func DefaultHiddifyOptions() *HiddifyOptions {
 		// LogFile:        "/dev/null",
 		LogFile:              "data/box.log",
 		Region:               "other",
-		ReverseRegionRouting: false,
+		RoutingMode:          "outbound",
 		EnableClashApi:       true,
 
 		ClashApiPort:   16756,

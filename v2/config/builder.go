@@ -878,7 +878,7 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 		matchedOutbound := OutboundDirectTag
 		matchedDNSServer := DNSMultiDirectTag
 		matchedDNSStrategy := hopt.DirectDnsDomainStrategy
-		if hopt.ReverseRegionRouting {
+		if hopt.RoutingMode == "reverse" {
 			matchedOutbound = OutboundMainDetour
 			matchedDNSServer = DNSRemoteTag
 			matchedDNSStrategy = hopt.RemoteDnsDomainStrategy
@@ -988,7 +988,7 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 	options.Route = &option.RouteOptions{
 		Rules: routeRules,
 		Final: func() string {
-			if hopt.Region != "other" && hopt.ReverseRegionRouting {
+			if hopt.Region != "other" && hopt.RoutingMode == "reverse" {
 				return OutboundDirectTag
 			}
 			return OutboundMainDetour
@@ -1042,7 +1042,7 @@ func setRoutingOptions(options *option.Options, hopt *HiddifyOptions) error {
 
 	catchAllDnsServer := DNSMultiRemoteTag
 	catchAllDnsStrategy := hopt.RemoteDnsDomainStrategy
-	if hopt.ReverseRegionRouting && hopt.Region != "other" {
+	if hopt.RoutingMode == "reverse" && hopt.Region != "other" {
 		// Preempts Route/DNS.Final. In reverse mode everything not matched by the
 		// earlier geo/cn rules must resolve via the direct path, otherwise abroad
 		// users can't reach e.g. www.google.com (DNS goes through the CN node).

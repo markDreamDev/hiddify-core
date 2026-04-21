@@ -103,7 +103,7 @@ type HiddifyOptions struct {
 	InboundOptions          *InboundOptions        `protobuf:"bytes,16,opt,name=inbound_options,json=inboundOptions,proto3" json:"inbound_options,omitempty"`                                  // Inbound connection options.
 	UrlTestOptions          *URLTestOptions        `protobuf:"bytes,17,opt,name=url_test_options,json=urlTestOptions,proto3" json:"url_test_options,omitempty"`                                // URL test configuration options.
 	RouteOptions            *RouteOptions          `protobuf:"bytes,18,opt,name=route_options,json=routeOptions,proto3" json:"route_options,omitempty"`                                        // Routing-related options.
-	ReverseRegionRouting    bool                   `protobuf:"varint,19,opt,name=reverse_region_routing,json=reverseRegionRouting,proto3" json:"reverse_region_routing,omitempty"`             // If true, invert region-based routing: matched traffic → proxy, default → direct.
+	RoutingMode             string                 `protobuf:"bytes,19,opt,name=routing_mode,json=routingMode,proto3" json:"routing_mode,omitempty"`                                           // Routing mode: "outbound" (classic split), "reverse" (return-to-region). Empty string is treated as outbound.
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -264,11 +264,11 @@ func (x *HiddifyOptions) GetRouteOptions() *RouteOptions {
 	return nil
 }
 
-func (x *HiddifyOptions) GetReverseRegionRouting() bool {
+func (x *HiddifyOptions) GetRoutingMode() string {
 	if x != nil {
-		return x.ReverseRegionRouting
+		return x.RoutingMode
 	}
-	return false
+	return ""
 }
 
 // *
@@ -1174,7 +1174,7 @@ var File_v2_hiddifyoptions_hiddify_options_proto protoreflect.FileDescriptor
 
 const file_v2_hiddifyoptions_hiddify_options_proto_rawDesc = "" +
 	"\n" +
-	"'v2/hiddifyoptions/hiddify_options.proto\x12\x0ehiddifyoptions\"\x99\a\n" +
+	"'v2/hiddifyoptions/hiddify_options.proto\x12\x0ehiddifyoptions\"\x86\a\n" +
 	"\x0eHiddifyOptions\x12,\n" +
 	"\x12enable_full_config\x18\x01 \x01(\bR\x10enableFullConfig\x12\x1b\n" +
 	"\tlog_level\x18\x02 \x01(\tR\blogLevel\x12\x19\n" +
@@ -1197,8 +1197,8 @@ const file_v2_hiddifyoptions_hiddify_options_proto_rawDesc = "" +
 	"dnsOptions\x12G\n" +
 	"\x0finbound_options\x18\x10 \x01(\v2\x1e.hiddifyoptions.InboundOptionsR\x0einboundOptions\x12H\n" +
 	"\x10url_test_options\x18\x11 \x01(\v2\x1e.hiddifyoptions.URLTestOptionsR\x0eurlTestOptions\x12A\n" +
-	"\rroute_options\x18\x12 \x01(\v2\x1c.hiddifyoptions.RouteOptionsR\frouteOptions\x124\n" +
-	"\x16reverse_region_routing\x18\x13 \x01(\bR\x14reverseRegionRouting\".\n" +
+	"\rroute_options\x18\x12 \x01(\v2\x1c.hiddifyoptions.RouteOptionsR\frouteOptions\x12!\n" +
+	"\frouting_mode\x18\x13 \x01(\tR\vroutingMode\".\n" +
 	"\bIntRange\x12\x12\n" +
 	"\x04from\x18\x01 \x01(\x05R\x04from\x12\x0e\n" +
 	"\x02to\x18\x02 \x01(\x05R\x02to\"\xac\x03\n" +

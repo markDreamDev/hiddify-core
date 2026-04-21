@@ -97,7 +97,7 @@ func setDns(options *option.Options, opt *HiddifyOptions, staticIps *map[string]
 	// }
 
 	dnsFinal := DNSMultiRemoteTag
-	if opt.ReverseRegionRouting && opt.Region != "other" {
+	if opt.RoutingMode == "reverse" && opt.Region != "other" {
 		// Mirror the Route.Final flip in builder.go: without this, unmatched
 		// domains resolve via the proxy (CN node) and DNS for Google etc. gets
 		// blocked by GFW even though the TCP route is direct.

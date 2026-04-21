@@ -30,7 +30,7 @@ message HiddifyOptions {
   InboundOptions inbound_options = 16; // Inbound connection options.
   URLTestOptions url_test_options = 17; // URL test configuration options.
   RouteOptions route_options = 18; // Routing-related options.
-  bool reverse_region_routing = 19; // If true, invert region-based routing: matched traffic → proxy, default → direct.
+  string routing_mode = 19; // Routing mode: "outbound" (classic split), "reverse" (return-to-region). Empty string is treated as outbound.
 }
 
 /**
